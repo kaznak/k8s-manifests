@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cert-client-postgres
+  labels:
+    app: ${APP_NAME}
+    cnpg.io/reload: "true"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-client-postgres
+  labels:
+    app: ${APP_NAME}
+spec:
+  secretName: cert-client-postgres
+  usages:
+    - client auth
+  commonName: postgres
+  issuerRef:
+    name: cert-ca
+    kind: Issuer
+    group: cert-manager.io

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cert-client-${APP_NAME}
+  labels:
+    app: ${APP_NAME}
+    cnpg.io/reload: "true"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-client-${APP_NAME}
+  labels:
+    app: ${APP_NAME}
+spec:
+  secretName: cert-client-${APP_NAME}
+  usages:
+    - client auth
+  commonName: ${APP_NAME}
+  issuerRef:
+    name: cert-ca
+    kind: Issuer
+    group: cert-manager.io

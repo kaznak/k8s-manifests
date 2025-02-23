@@ -1,0 +1,45 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cert-root
+  labels:
+    app: ${APP_NAME}
+spec:
+  selfSigned: {}
+--- 
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cert-ca
+  labels:
+    app: ${APP_NAME}
+    cnpg.io/reload: "true"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-ca
+  labels:
+    app: ${APP_NAME}
+spec:
+  secretName: cert-ca
+  isCA: true
+  commonName: cert-ca
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: cert-root
+    kind: Issuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: cert-ca
+  labels:
+    app: ${APP_NAME}
+spec:
+  ca:
+    secretName: cert-ca
+---
