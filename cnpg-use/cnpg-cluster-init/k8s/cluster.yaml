@@ -1,0 +1,61 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  labels:
+    app: ${APP_NAME}
+    cluster: cnpg-${APP_NAME}
+    hubble.ui.cilium.io/name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+spec:
+  monitoring:
+    enablePodMonitor: true
+  instances: 1
+  primaryUpdateStrategy: unsupervised
+  imageName: ghcr.io/cloudnative-pg/postgresql:17
+  imagePullPolicy: Always
+  postgresql:
+    # pg_audit は有効化しない
+    pg_hba:
+    - hostssl all all all cert
+  certificates:
+    serverTLSSecret: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME}
+    serverCASecret: cert-ca
+    clientCASecret: cert-ca
+    replicationTLSSecret: cert-client-streamingreplica
+  bootstrap:
+    initdb:
+      database: ${APP_NAME}
+      owner: ${APP_NAME}
+      postInitApplicationSQL:
+      # postInitApplicationSQL accepts create database statements.
+      - COMMENT ON DATABASE app IS 'Database for a ${APP_NAME}';
+  managed:
+    roles:
+    - name: ${APP_NAME}
+      comment: Role for ${APP_NAME}
+      login: true
+      disablePassword: true
+  storage:
+    # storageClass: # use default storage class
+    size: 10Gi
+  backup:
+    barmanObjectStore:
+      wal:
+        compression: bzip2
+        encryption: AES256
+      data:
+        compression: bzip2
+        encryption: AES256
+      # https://cloudnative-pg.io/documentation/1.16/backup_recovery/#cloud-provider-support
+      destinationPath: gs://${CNPG_BACKUP_GCS_BUCKET}/${NAMESPACE}/cnpg-${APP_NAME}/
+      googleCredentials:
+        applicationCredentials:
+          name: gcs-key
+          key: key.json
+  resources:
+    limits:
+      cpu: 1
+      memory: 500Mi
+    requests:
+      cpu: 5m
+      memory: 100Mi

@@ -1,0 +1,49 @@
+NAMESPACE=svc-auth-ebhigi-tokyo
+USER=postgres
+CERT_SERVER=cert-server-cnpgzitadel-20250214
+CERT_USER=cert-client-$(USER)
+
+PASSWORD_LENGTH=64
+
+######################################################
+cert-all:	\
+	cert/$(USER)/server-ca.crt	\
+	cert/$(USER)/tls.crt	\
+	cert/$(USER)/tls.key
+
+cert-clean:
+	rm -rf cert
+
+cert/$(USER):
+	mkdir -p $@
+
+cert/$(USER)/server-ca.crt: | cert/$(USER)
+	# for sslrootcert of psql
+	kubectl -n $(NAMESPACE) get secret $(CERT_SERVER) -o json	\
+	| jq -r '.data["ca.crt"]|@base64d'	\
+	| tee $@
+
+cert/$(USER)/tls.crt: | cert/$(USER)
+	# for sslcert of psql
+	kubectl -n $(NAMESPACE) get secret $(CERT_USER) -o json	\
+	| jq -r '.data["tls.crt"]|@base64d'	\
+	| tee $@
+
+cert/$(USER)/tls.key: | cert/$(USER)
+	# for sslkey of psql
+	kubectl -n $(NAMESPACE) get secret $(CERT_USER) -o json	\
+	| jq -r '.data["tls.key"]|@base64d'	\
+	| tee $@
+
+######################################################
+reload-configs:
+	# https://cloudnative-pg.io/documentation/1.16/certificates/#:~:text=to%20client%20certificates.-,Note,-If%20you%20want
+	kubectl cnpg reload cnpg-zitadel -n $(NAMESPACE)
+
+######################################################
+k8s/.secret.cnpg-zitadel-user-zitadel-owner	\
+k8s/.secret.cnpg-zitadel-user-zitadel	\
+	:
+	PASSWORD=`tr -dc 'A-Za-z0-9' < /dev/urandom	\
+		| head -c$(PASSWORD_LENGTH)`	\
+		envsubst < $@.example > $@

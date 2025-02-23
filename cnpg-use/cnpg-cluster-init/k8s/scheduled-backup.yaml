@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  labels:
+    app: ${APP_NAME}
+spec:
+  schedule: "0 10 19 * * *"
+  # backup at 19:10 UTC(4:10 JST) every day
+  backupOwnerReference: cluster
+  cluster:
+    name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  immediate: true

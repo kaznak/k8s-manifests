@@ -1,0 +1,17 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: restrict-egress-cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  namespace: ${NAMESPACE}
+spec:
+  endpointSelector:
+    matchLabels:
+      cnpg.io/cluster: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  egress:
+  - # GCS for cnpg backup
+    toFQDNs:
+      - matchPattern: "*.googleapis.com"
+  - # Replication
+    toEndpoints:
+      - matchLabels:
+          cnpg.io/cluster: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
