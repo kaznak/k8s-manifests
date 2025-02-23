@@ -24,11 +24,9 @@ spec:
     replicationTLSSecret: cert-client-streamingreplica
   bootstrap:
     initdb:
-      database: ${APP_NAME}
-      owner: ${APP_NAME}
-      postInitApplicationSQL:
-      # postInitApplicationSQL accepts create database statements.
-      - COMMENT ON DATABASE app IS 'Database for a ${APP_NAME}';
+      recovery:
+        backup:
+          name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_PREV}
   managed:
     roles:
     - name: ${APP_NAME}
