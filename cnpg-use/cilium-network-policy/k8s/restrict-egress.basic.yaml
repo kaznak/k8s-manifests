@@ -1,0 +1,28 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: restrict-egress-basic
+spec:
+  endpointSelector:
+    {}
+  egress:
+  - # API Server
+    toEntities:
+    - kube-apiserver
+  - # Kube DNS
+    toEndpoints:
+    - matchLabels:
+        k8s:io.kubernetes.pod.namespace: kube-system
+        k8s:k8s-app: kube-dns
+    toPorts:
+      - ports:
+          - port: "53"
+            protocol: ANY
+        rules:
+          dns:
+            - matchPattern: "*" # to cache DNS queries and enable toFQDNs rules
+  - # ICMPv4
+    icmps:
+    - fields:
+      - family: IPv4
+        type: 3 # Destination Unreachable
