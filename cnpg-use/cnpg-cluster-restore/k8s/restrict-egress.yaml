@@ -1,12 +1,12 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: restrict-egress-cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  name: restrict-egress-cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_RSTR}
   namespace: ${NAMESPACE}
 spec:
   endpointSelector:
     matchLabels:
-      cnpg.io/cluster: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+      cnpg.io/cluster: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_RSTR}
   egress:
   - # GCS for cnpg backup
     toFQDNs:
@@ -14,4 +14,4 @@ spec:
   - # Replication
     toEndpoints:
       - matchLabels:
-          cnpg.io/cluster: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+          cnpg.io/cluster: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_RSTR}

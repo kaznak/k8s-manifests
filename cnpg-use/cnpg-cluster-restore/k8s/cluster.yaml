@@ -1,11 +1,11 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_RSTR}
   labels:
     app: ${APP_NAME}
     cluster: cnpg-${APP_NAME}
-    hubble.ui.cilium.io/name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}
+    hubble.ui.cilium.io/name: cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_RSTR}
 spec:
   monitoring:
     enablePodMonitor: true
@@ -18,8 +18,8 @@ spec:
     pg_hba:
     - hostssl all all all cert
   certificates:
-    serverTLSSecret: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME}
-    serverCASecret: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME}
+    serverTLSSecret: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME_RSTR}
+    serverCASecret: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME_RSTR}
     clientCASecret: cert-client-streamingreplica
     replicationTLSSecret: cert-client-streamingreplica
   bootstrap:

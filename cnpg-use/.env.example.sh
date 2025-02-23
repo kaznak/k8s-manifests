@@ -2,5 +2,7 @@
 export APP_NAME=app
 export NAMESPACE=default
 export CNPG_BACKUP_GCS_BUCKET=backup-bucket
-export CLUSTER_BRANCH_NAME=yyyymmdd
-export CLUSTER_BRANCH_NAME_PREV=yyyymmcc
+export CLUSTER_BRANCH_NAME_INIT=yyyymmddinit
+export CLUSTER_BRANCH_NAME_PREV=$CLUSTER_BRANCH_NAME_INIT
+export CLUSTER_BRANCH_NAME_RSTR=yyyymmddrstr
+

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  name: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}
   labels:
     app: ${APP_NAME}
     cnpg.io/reload: "true"
@@ -9,28 +9,28 @@ metadata:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  name: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}
   labels:
     app: ${APP_NAME}
 spec:
-  secretName: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME}
+  secretName: cert-server-cnpg${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}
   usages:
     - server auth
   dnsNames:
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-r
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-r.${NAMESPACE}
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-r.${NAMESPACE}.svc
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-r.${NAMESPACE}.svc.cluster.local
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-r
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-r.${NAMESPACE}
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-r.${NAMESPACE}.svc
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-r.${NAMESPACE}.svc.cluster.local
 
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-ro
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-ro.${NAMESPACE}
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-ro.${NAMESPACE}.svc
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-ro.${NAMESPACE}.svc.cluster.local
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-ro
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-ro.${NAMESPACE}
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-ro.${NAMESPACE}.svc
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-ro.${NAMESPACE}.svc.cluster.local
 
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-rw
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-rw.${NAMESPACE}
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-rw.${NAMESPACE}.svc
-    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME}-rw.${NAMESPACE}.svc.cluster.local
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-rw
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-rw.${NAMESPACE}
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-rw.${NAMESPACE}.svc
+    - cnpg-${APP_NAME}-${CLUSTER_BRANCH_NAME_INIT}-rw.${NAMESPACE}.svc.cluster.local
 
   issuerRef:
     name: cert-ca
