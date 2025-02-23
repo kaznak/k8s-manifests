@@ -4,4 +4,8 @@ My k8s Manifest Collection
 
 ## dependencies
 
-- [renvsubst](https://github.com/containeroo/renvsubst)
+- operator environment
+  - [renvsubst](https://github.com/containeroo/renvsubst)
+- cluster environment
+  - cert-manager
+  - cilium
