@@ -52,6 +52,7 @@ spec:
         applicationCredentials:
           name: gcs-key
           key: key.json
+    retentionPolicy: "30d"
   resources:
     limits:
       cpu: 1
