@@ -1,0 +1,34 @@
+#!/bin/bash
+#|
+#| NAME
+#|      rename-k8s-manifest: マニフェストファイルをリネームする
+#| SYNOPSIS
+#|      rename-k8s-manifest
+#| DESCRIPTION
+#|      リネームしたいファイルの名前を標準入力から入力すると
+#|      <.kind>.<.metadata.name>.yaml の形式にリネームされる。
+#|      kind と name が取得できなかった場合はスキップされる。
+#| 
+
+based=$(dirname "$0")
+pname=$(basename "$0")
+stime=$(date +%Y%m%d%H%M%S)
+
+# tmpd=$(mktemp -d /tmp/${pname}.XXXXXX)
+
+set -Cu
+set -Ee
+# set -vx
+
+while read -r f; do
+    dir=$(dirname $f)
+    newf=$(yq eval '"\(.kind).\(.metadata.name).yaml"' $f)
+    if ! echo $newf | grep -q "^.\+.\+\.yaml$"; then
+        echo "SKIP $f" >&2
+    else
+        mv "$f" "$dir/$newf"
+        echo $f $dir/$newf
+    fi
+done
+
+exit 0
