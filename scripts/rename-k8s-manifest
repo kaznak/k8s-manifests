@@ -10,15 +10,62 @@
 #|      kind と name が取得できなかった場合はスキップされる。
 #| 
 
-based=$(dirname "$0")
-pname=$(basename "$0")
-stime=$(date +%Y%m%d%H%M%S)
-
-# tmpd=$(mktemp -d /tmp/${pname}.XXXXXX)
-
 set -Cu
 set -Ee
+set -o pipefail
+shopt -s nullglob
+
+stime=$(date +%Y%m%d%H%M%S%Z)
+based=$(readlink -f $(dirname $0)/..)
+pname=$(basename $0)
+
+exec 3>&2
+# logd=$based/log
+# exec 3>&2 2>$logd/$pname.$stime.$$.log
 # set -vx
+
+MSG() {
+    echo "$pname pid:$$ stime:$stime etime:$(date +%Y%m%d%H%M%S%Z) $@"	>&3
+}
+
+tmpd=$(mktemp -d -t "$pname.$stime.$$.XXXXXXXX")/
+if [ 0 -ne "$?" ] ; then
+    MSG "line:$LINENO FATAL can not make temporally directory."
+    exit 1
+fi
+
+trap 'BEFORE_EXIT' EXIT
+BEFORE_EXIT()	{
+    rm -rf $tmpd
+}
+
+trap 'ERROR_HANDLER' ERR
+export EMSG="line:$LINENO ERROR"
+ERROR_HANDLER()	{
+    MSG "line:$LINENO ERROR status ${PIPESTATUS[@]}"
+    [ "$EMSG" ] && MSG $EMSG
+    touch $tmpd/ERROR	# for child process error detection
+    MSG "line:$LINENO EXIT with error."
+    exit 1		# root process trigger BEFORE_EXIT function
+}
+
+PROGRESS() {
+    lineno="$1"
+    shift
+    print="$1"
+    PMSG="$*"
+    if [ "$print" != "_" ]; then
+        MSG "line:$lineno INFO $PMSG"
+    fi
+    EMSG="line:$lineno ERROR while $PMSG"
+}
+
+print_help() {
+    grep '^#|' "$0" | sed 's/^#|//'
+}
+
+################################################################
+PROGRESS $LINENO "_" "Main Process"
 
 while read -r f; do
     dir=$(dirname $f)
@@ -31,4 +78,6 @@ while read -r f; do
     fi
 done
 
+################################################################
+PROGRESS $LINENO "_" "Finish"
 exit 0
