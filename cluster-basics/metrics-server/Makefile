@@ -18,7 +18,9 @@ delete:
 $(K8S_DIR):
 	mkdir -p $@
 
-generate: | $(K8S_DIR)
+generate: generate-form-manifest
+
+generate-form-manifest: | $(K8S_DIR)
 	curl -Lf https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml |	\
 		../../scripts/split-yaml $(K8S_DIR) |	\
 		../../scripts/rename-k8s-manifest	|	\
