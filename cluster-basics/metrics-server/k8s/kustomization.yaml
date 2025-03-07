@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# namespace: ${NAMESPACE}
+
+resources:
+- k8s/ServiceAccount.metrics-server.yaml
+- k8s/ClusterRole.system:aggregated-metrics-reader.yaml
+- k8s/ClusterRole.system:metrics-server.yaml
+- k8s/RoleBinding.metrics-server-auth-reader.yaml
+- k8s/ClusterRoleBinding.metrics-server:system:auth-delegator.yaml
+- k8s/ClusterRoleBinding.system:metrics-server.yaml
+- k8s/Service.metrics-server.yaml
+- k8s/Deployment.metrics-server.yaml
+- k8s/APIService.v1beta1.metrics.k8s.io.yaml
